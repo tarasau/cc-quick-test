@@ -1,0 +1,124 @@
+{
+    "questions": [
+        {
+            "id": 1,
+            "question": "What is Angular primarily used for?",
+            "options": [
+                "Building mobile applications",
+                "Building desktop applications",
+                "Building dynamic web applications",
+                "Building command-line tools"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Angular is a framework for building dynamic web applications, allowing developers to create interactive user interfaces."
+        },
+          {
+            "id": 2,
+            "question": "Which of the following is a core concept of Angular",
+            "options": [
+              "Components",
+              "Templates",
+              "Directives",
+              "All of the above"
+            ],
+            "correctAnswer": 3,
+            "explanation": "Angular is built around core concepts like components, templates, and directives, which work together to create applications."
+          },
+          {
+            "id": 3,
+            "question": "How do you create a new Angular component",
+            "options": [
+              "ng create component",
+              "ng generate component",
+              "ng new component",
+              "ng add component"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The correct command to create a new Angular component using Angular CLI is ng generate component."
+          },
+          {
+            "id": 4,
+            "question": "Which module is required for using ngModel",
+            "options": [
+              "BrowserModule",
+              "FormsModule",
+              "ReactiveFormsModule",
+              "HttpClientModule"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The FormsModule is necessary to use ngModel for two-way data binding in Angular forms."
+          },
+          {
+            "id": 5,
+            "question": "How do you add a global HTTP header in Angular",
+            "options": [
+              "HttpHeaders",
+              "HttpInterceptor",
+              "HttpClient",
+              "HttpService"
+            ],
+            "correctAnswer": 1,
+            "explanation": "An HttpInterceptor is used to add global HTTP headers to all outgoing requests in Angular."
+          },
+          {
+            "id": 6,
+            "question": "Which command initializes a new Angular application",
+            "options": [
+              "ng start",
+              "ng init",
+              "ng new",
+              "ng create"
+            ],
+            "correctAnswer": 2,
+            "explanation": "The command ng new is used to initialize a new Angular application."
+          },
+          {
+            "id": 7,
+            "question": "What is a structural directive",
+            "options": [
+              "It modifies the behavior of a component",
+              "It changes the appearance of an element",
+              "It alters the structure of the DOM",
+              "It defines custom event handling"
+            ],
+            "correctAnswer": 2,
+            "explanation": "Structural directives modify the structure of the DOM by adding or removing elements."
+          },
+          {
+            "id": 8,
+            "question": "Which lifecycle hook runs after the component's view has been fully initialized",
+            "options": [
+              "ngOnInit",
+              "ngAfterViewInit",
+              "ngOnDestroy",
+              "ngOnChanges"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The ngAfterViewInit lifecycle hook is called after the component's view has been fully initialized."
+          },
+          {
+            "id": 9,
+            "question": "What does the async pipe do",
+            "options": [
+              "Waits for a promise to resolve",
+              "Automatically subscribes to an observable and unsubscribes on destroy",
+              "Converts a promise to an observable",
+              "None of the above"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The async pipe automatically subscribes to an observable or promise and unsubscribes when the component is destroyed."
+          },
+          {
+            "id": 10,
+            "question": "What is the purpose of the @Input decorator",
+            "options": [
+              "To define output properties",
+              "To receive data from a parent component",
+              "To declare a component",
+              "To define a service"
+            ],
+            "correctAnswer": 1,
+            "explanation": "The @Input decorator is used to receive data from a parent component in Angular."
+          }
+    ]
+  }
