@@ -324,7 +324,7 @@ export default function TestPage() {
                 <button
                   type="submit"
                   disabled={isStartingTest()}
-                  class="w-full bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] disabled:bg-gray-400 text-white py-2 px-4 rounded-md font-medium transition-colors"
+                  class="w-full bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] disabled:bg-gray-400 text-white py-2 px-4 rounded-md font-medium cursor-pointer transition-colors"
                 >
                   {isStartingTest() ? 'Starting Test...' : 'Start Test'}
                 </button>
@@ -376,7 +376,7 @@ export default function TestPage() {
               <Show when={getCurrentQuestion()}>
                 {(question) => (
                   <div>
-                    <h2 class="text-lg font-medium text-gray-900 mb-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-6 select-none pointer-events-none">
                       {question().question}
                     </h2>
 
@@ -392,7 +392,7 @@ export default function TestPage() {
                               onChange={() => handleAnswerSelect(question().id, index())}
                               class="mr-3 text-[var(--color-brand-primary)] focus:ring-[var(--color-brand-primary)]"
                             />
-                            <span class="text-gray-900">{option}</span>
+                            <span class="text-gray-900 select-none">{option}</span>
                           </label>
                         )}
                       </For>
@@ -416,7 +416,7 @@ export default function TestPage() {
                   fallback={
                     <button
                       onClick={handleNextQuestion}
-                      class="px-4 py-2 bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] text-white rounded-md text-sm font-medium transition-colors"
+                      class="px-4 py-2 bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] text-white rounded-md text-sm font-medium cursor-pointer transition-colors"
                     >
                       Next
                     </button>
@@ -425,7 +425,7 @@ export default function TestPage() {
                   <button
                     onClick={handleSubmitTest}
                     disabled={isSubmitting()}
-                    class="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white rounded-md text-sm font-medium transition-colors"
+                    class="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white rounded-md text-sm font-medium cursor-pointer transition-colors"
                   >
                     <span class="text-white">
                       {isSubmitting() ? 'Submitting...' : 'Submit Test'}

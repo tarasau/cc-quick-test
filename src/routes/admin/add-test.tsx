@@ -292,14 +292,14 @@ export default function AddTest() {
                 <button
                   type="submit"
                   disabled={isSaving() || !!jsonError()}
-                  class="px-4 py-2 bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-colors"
+                  class="px-4 py-2 bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] disabled:bg-gray-400 text-white rounded-md text-sm font-medium cursor-pointer transition-colors"
                 >
                   {isSaving() ? 'Saving...' : 'Save Test'}
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate('/admin')}
-                  class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>

@@ -1,5 +1,6 @@
 import { createSignal, Show, onMount, onCleanup } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
+import { isServer } from 'solid-js/web'
 import type { AuthUser } from '~/types'
 import whiteLogo from '~/assets/whiteLogo.svg'
 
@@ -31,11 +32,15 @@ export default function AdminHeader(props: AdminHeaderProps) {
   }
 
   onMount(() => {
-    document.addEventListener('click', handleClickOutside)
+    if (!isServer) {
+      document.addEventListener('click', handleClickOutside)
+    }
   })
 
   onCleanup(() => {
-    document.removeEventListener('click', handleClickOutside)
+    if (!isServer) {
+      document.removeEventListener('click', handleClickOutside)
+    }
   })
 
   return (
@@ -74,7 +79,7 @@ export default function AdminHeader(props: AdminHeaderProps) {
             <div class="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen())}
-                class="flex items-center space-x-3 text-white hover:text-gray-200 transition-colors"
+                class="flex items-center space-x-3 text-white hover:text-gray-200 cursor-pointer transition-colors"
               >
                 <span class="text-sm font-medium">
                   {props.user?.email}
@@ -98,7 +103,7 @@ export default function AdminHeader(props: AdminHeaderProps) {
                 <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <button
                     onClick={handleLogout}
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors"
                   >
                     Logout
                   </button>

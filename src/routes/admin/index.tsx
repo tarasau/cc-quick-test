@@ -139,7 +139,7 @@ export default function Admin() {
         <div class="mb-6 flex justify-end">
           <button
             onClick={() => navigate('/admin/add-test')}
-            class="bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            class="bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer transition-colors"
           >
             Add New
           </button>
@@ -205,7 +205,7 @@ export default function Admin() {
                           <button
                             onClick={() => handleShareTest(test.id)}
                             disabled={tooltipVisible() === test.id}
-                            class="bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] disabled:bg-gray-400 text-white px-3 py-1 rounded text-sm transition-colors w-20"
+                            class="bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-hover)] disabled:bg-gray-400 text-white px-3 py-1 rounded text-sm cursor-pointer transition-colors w-20"
                           >
                             Share
                           </button>
@@ -218,7 +218,7 @@ export default function Admin() {
                         </div>
                         <button
                           onClick={() => handleRemoveTest(test.id, test.name)}
-                          class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors w-20"
+                          class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm cursor-pointer transition-colors w-20"
                         >
                           Remove
                         </button>
