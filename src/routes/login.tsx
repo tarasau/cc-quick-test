@@ -115,15 +115,6 @@ export default function Login() {
                 {isLoading() ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
-            
-            {/* Demo credentials */}
-            <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
-              <p class="text-center text-sm text-gray-600 font-medium mb-2">Demo credentials:</p>
-              <div class="text-center text-sm text-gray-600 space-y-1">
-                <p><span class="font-medium">Email:</span> admin@test.com</p>
-                <p><span class="font-medium">Password:</span> admin123</p>
-              </div>
-            </div>
           </form>
         </div>
       </div>

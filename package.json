@@ -1,12 +1,14 @@
 {
-  "name": "example-with-tailwindcss",
+  "name": "cc-quick-test",
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
+    "deploy": "npm run build && wrangler pages deploy .output/public",
+    "preview": "wrangler pages dev .output/public",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
+    "db:migrate": "prisma migrate deploy",
     "db:reset": "prisma migrate reset",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio"
