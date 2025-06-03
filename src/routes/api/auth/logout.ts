@@ -11,7 +11,7 @@ export async function POST({ request }: { request: Request }) {
       ?.split('=')[1]
 
     if (sessionToken) {
-      deleteSession(sessionToken)
+      await deleteSession(sessionToken)
     }
 
     // Clear session cookie

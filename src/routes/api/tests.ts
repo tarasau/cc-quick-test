@@ -1,14 +1,12 @@
 import { json } from '@solidjs/router'
-import { PrismaClient } from '@prisma/client'
+import { prismaGetter } from '~/lib/prisma'
 import { getCurrentUser } from '~/lib/session'
 import type { TestContent, CreateTestRequest } from '~/types'
-
-const prisma = new PrismaClient()
 
 export async function GET({ request }: { request: Request }) {
   try {
     // Check authentication
-    const user = getCurrentUser(request)
+    const user = await getCurrentUser(request)
     if (!user) {
       return json(
         { error: 'Not authenticated' },
@@ -16,19 +14,32 @@ export async function GET({ request }: { request: Request }) {
       )
     }
 
-    // Fetch all tests
+    // Fetch all tests with metadata
+    const prisma = await prismaGetter();
     const tests = await prisma.test.findMany({
+      select: {
+        id: true,
+        name: true,
+        version: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            testSessions: true
+          }
+        }
+      },
       orderBy: {
         createdAt: 'desc'
       }
     })
 
-    // Transform tests to include calculated fields
-    const testsWithMetadata = tests.map(test => {
-      const content = test.content as unknown as TestContent
-      const questionCount = content.questions?.length || 0
-      // Estimate 1 minute per question + 2 minutes for instructions
-      const estimatedTime = questionCount + 2
+    // Transform tests to include question count and estimated time
+    const testsWithMetadata = tests.map((test: any) => {
+      const content = test.content as any
+      const questionCount = content?.questions?.length || 0
+      const estimatedTime = Math.max(questionCount * 2, 5) // 2 minutes per question, minimum 5 minutes
 
       return {
         id: test.id,
@@ -36,6 +47,7 @@ export async function GET({ request }: { request: Request }) {
         version: test.version,
         questionCount,
         estimatedTime,
+        sessionsCount: test._count.testSessions,
         createdAt: test.createdAt,
         updatedAt: test.updatedAt
       }
@@ -57,7 +69,7 @@ export async function GET({ request }: { request: Request }) {
 export async function POST({ request }: { request: Request }) {
   try {
     // Check authentication
-    const user = getCurrentUser(request)
+    const user = await getCurrentUser(request)
     if (!user) {
       return json(
         { error: 'Not authenticated' },
@@ -84,6 +96,7 @@ export async function POST({ request }: { request: Request }) {
     }
 
     // Check if test with same name and version already exists
+    const prisma = await prismaGetter();
     const existingTest = await prisma.test.findFirst({
       where: {
         name,
@@ -99,6 +112,7 @@ export async function POST({ request }: { request: Request }) {
     }
 
     // Create the test
+    
     const test = await prisma.test.create({
       data: {
         name,
@@ -128,7 +142,7 @@ export async function POST({ request }: { request: Request }) {
 export async function DELETE({ request }: { request: Request }) {
   try {
     // Check authentication
-    const user = getCurrentUser(request)
+    const user = await getCurrentUser(request)
     if (!user) {
       return json(
         { error: 'Not authenticated' },
@@ -136,21 +150,42 @@ export async function DELETE({ request }: { request: Request }) {
       )
     }
 
+    // Get test ID from query parameters
     const url = new URL(request.url)
-    const testId = url.searchParams.get('id')
+    const id = url.searchParams.get('id')
 
-    if (!testId) {
+    if (!id) {
       return json(
         { error: 'Test ID is required' },
         { status: 400 }
       )
     }
 
+    const testId = parseInt(id)
+    if (isNaN(testId)) {
+      return json(
+        { error: 'Invalid test ID' },
+        { status: 400 }
+      )
+    }
+
+    // Check if test exists
+    const prisma = await prismaGetter();
+
+    const test = await prisma.test.findUnique({
+      where: { id: testId }
+    })
+
+    if (!test) {
+      return json(
+        { error: 'Test not found' },
+        { status: 404 }
+      )
+    }
+
     // Delete the test (this will cascade delete sessions and results)
     await prisma.test.delete({
-      where: {
-        id: parseInt(testId)
-      }
+      where: { id: testId }
     })
 
     return json({

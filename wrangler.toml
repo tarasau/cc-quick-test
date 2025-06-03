@@ -1,6 +1,16 @@
 name = "cc-quick-test"
-compatibility_date = "2024-01-01"
-pages_build_output_dir = ".output/public"
+compatibility_date = "2025-06-01"
+compatibility_flags = [ "nodejs_compat" ]
+
+main = "./.output/server/index.mjs"
+route = "cc-quick-test.pages.dev/*"
 
 [env.production.vars]
 NODE_ENV = "production"
+
+rules = [
+  { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
+]
+
+[site]
+bucket = ".output/public"

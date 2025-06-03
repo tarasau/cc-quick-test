@@ -83,7 +83,7 @@ export default function TestPage() {
     
     // Move to next question or submit test if it's the last question
     const test = testContent()
-    if (!test) return
+    if (!test || !test.questions || !Array.isArray(test.questions)) return
 
     if (currentQuestionIndex() < test.questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1)
@@ -109,7 +109,7 @@ export default function TestPage() {
 
       if (response.ok) {
         const data = await response.json()
-        setTestContent(data.test)
+        setTestContent(data.test.content) // Use content property
         setState('name-entry')
       } else {
         const errorData = await response.json()
@@ -169,7 +169,7 @@ export default function TestPage() {
 
   const handleNextQuestion = () => {
     const test = testContent()
-    if (!test) return
+    if (!test || !test.questions || !Array.isArray(test.questions)) return
 
     stopQuestionTimer()
 
@@ -184,7 +184,7 @@ export default function TestPage() {
 
   const handleSubmitTest = async () => {
     const test = testContent()
-    if (!test) return
+    if (!test || !test.questions || !Array.isArray(test.questions)) return
 
     stopQuestionTimer()
 
@@ -227,13 +227,13 @@ export default function TestPage() {
 
   const getCurrentQuestion = (): TestQuestion | null => {
     const test = testContent()
-    if (!test) return null
+    if (!test || !test.questions || !Array.isArray(test.questions)) return null
     return test.questions[currentQuestionIndex()] || null
   }
 
   const getProgress = (): { current: number; total: number; percentage: number } => {
     const test = testContent()
-    if (!test) return { current: 0, total: 0, percentage: 0 }
+    if (!test || !test.questions || !Array.isArray(test.questions)) return { current: 0, total: 0, percentage: 0 }
     
     const current = currentQuestionIndex() + 1
     const total = test.questions.length
@@ -250,7 +250,7 @@ export default function TestPage() {
 
   const isLastQuestion = (): boolean => {
     const test = testContent()
-    if (!test) return false
+    if (!test || !test.questions || !Array.isArray(test.questions)) return false
     return currentQuestionIndex() === test.questions.length - 1
   }
 

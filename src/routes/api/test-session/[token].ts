@@ -1,7 +1,5 @@
 import { json } from '@solidjs/router'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prismaGetter } from '~/lib/prisma'
 
 export async function GET({ params }: { params: { token: string } }) {
   try {
@@ -15,6 +13,7 @@ export async function GET({ params }: { params: { token: string } }) {
     }
 
     // Find the test session
+    const prisma = await prismaGetter();
     const session = await prisma.testSession.findUnique({
       where: { token },
       include: {
@@ -46,14 +45,18 @@ export async function GET({ params }: { params: { token: string } }) {
       )
     }
 
-    // Return test content
     return json({
       success: true,
-      test: session.test.content,
+      test: {
+        id: session.test.id,
+        name: session.test.name,
+        version: session.test.version,
+        content: session.test.content
+      },
       sessionId: session.id
     })
   } catch (error) {
-    console.error('Error validating test session:', error)
+    console.error('Error fetching test session:', error)
     return json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -81,6 +84,7 @@ export async function POST({ request, params }: { request: Request, params: { to
     }
 
     // Find the test session
+    const prisma = await prismaGetter();
     const session = await prisma.testSession.findUnique({
       where: { token },
       include: {

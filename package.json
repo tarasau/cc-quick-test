@@ -5,8 +5,8 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "deploy": "npm run build && wrangler pages deploy .output/public",
-    "preview": "wrangler pages dev .output/public",
+    "deploy": "wrangler pages deploy dist",
+    "preview": "wrangler pages dev dist",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:reset": "prisma migrate reset",
@@ -14,18 +14,23 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "@prisma/adapter-neon": "^6.8.2",
+    "@prisma/client": "^6.8.2",
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "^1.1.0",
+    "dotenv": "^16.5.0",
+    "prisma": "^6.8.2",
     "solid-js": "^1.9.5",
     "vinxi": "^0.5.3",
-    "prisma": "^6.8.2",
-    "@prisma/client": "^6.8.2",
-    "bcryptjs": "^2.4.3"
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.7",
+    "@types/ws": "^8.18.1",
     "tailwindcss": "^4.0.7",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "unenv": "^1.10.0"
   },
   "engines": {
     "node": ">=22"

@@ -3,7 +3,7 @@ import { getCurrentUser } from '~/lib/session'
 
 export async function GET({ request }: { request: Request }) {
   try {
-    const user = getCurrentUser(request)
+    const user = await getCurrentUser(request)
     
     if (!user) {
       return json(

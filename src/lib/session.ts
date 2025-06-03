@@ -13,7 +13,7 @@ export function getSessionFromCookie(cookieHeader: string | null): string | null
   return sessionCookie || null
 }
 
-export function getCurrentUser(request: Request): AuthUser | null {
+export async function getCurrentUser(request: Request): Promise<AuthUser | null> {
   const cookieHeader = request.headers.get('Cookie')
   
   const sessionToken = getSessionFromCookie(cookieHeader)
@@ -23,12 +23,12 @@ export function getCurrentUser(request: Request): AuthUser | null {
     return null
   }
   
-  const user = getSession(sessionToken)
+  const user = await getSession(sessionToken)
   return user
 }
 
-export function requireCurrentUser(request: Request): AuthUser {
-  const user = getCurrentUser(request)
+export async function requireCurrentUser(request: Request): Promise<AuthUser> {
+  const user = await getCurrentUser(request)
   
   if (!user) {
     throw new Error('Authentication required')

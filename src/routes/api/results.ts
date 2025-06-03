@@ -1,11 +1,11 @@
 import { APIEvent } from '@solidjs/start/server'
-import { prisma } from '~/lib/prisma'
+import { prismaGetter } from '~/lib/prisma'
 import { getCurrentUser } from '~/lib/session'
 
 export async function GET(event: APIEvent) {
   try {
     // Check authentication
-    const user = getCurrentUser(event.request)
+    const user = await getCurrentUser(event.request)
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
@@ -14,6 +14,7 @@ export async function GET(event: APIEvent) {
     }
 
     // Fetch all test results with related test information
+    const prisma = await prismaGetter();
     const results = await prisma.testResult.findMany({
       include: {
         session: {
@@ -34,7 +35,7 @@ export async function GET(event: APIEvent) {
     })
 
     // Transform the data for the frontend
-    const transformedResults = results.map(result => {
+    const transformedResults = results.map((result: any) => {
       const testContent = result.session.test.content as any
       const totalQuestions = testContent.questions?.length || 0
       

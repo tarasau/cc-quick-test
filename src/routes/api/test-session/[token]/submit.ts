@@ -1,18 +1,16 @@
 import { json } from '@solidjs/router'
-import { PrismaClient } from '@prisma/client'
+import { prismaGetter } from '~/lib/prisma'
 import type { TestContent, TestQuestion } from '~/types'
-
-const prisma = new PrismaClient()
 
 interface SubmitTestRequest {
   userName: string
-  answers: Record<number, number>
+  answers: Record<number, number | null>
 }
 
 export async function POST({ request, params }: { request: Request, params: { token: string } }) {
   try {
     const { token } = params
-    const body: SubmitTestRequest = await request.json()
+    const body = await request.json() as SubmitTestRequest
 
     if (!token) {
       return json(
@@ -21,21 +19,25 @@ export async function POST({ request, params }: { request: Request, params: { to
       )
     }
 
-    if (!body.userName?.trim()) {
+    const { userName, answers } = body
+
+    if (!userName?.trim()) {
       return json(
         { error: 'User name is required' },
         { status: 400 }
       )
     }
 
-    if (!body.answers || typeof body.answers !== 'object') {
+    if (!answers || typeof answers !== 'object') {
       return json(
-        { error: 'Answers are required' },
+        { error: 'Answers must be an object' },
         { status: 400 }
       )
     }
 
     // Find the test session
+    const prisma = await prismaGetter();
+
     const session = await prisma.testSession.findUnique({
       where: { token },
       include: {
@@ -59,70 +61,46 @@ export async function POST({ request, params }: { request: Request, params: { to
       )
     }
 
-    // Check if test result already exists (test already completed)
+    // Check if test has already been submitted
     if (session.result) {
       return json(
-        { error: 'This test has already been completed' },
-        { status: 410 }
-      )
-    }
-
-    // Session should be marked as used when test started, but we can still submit results
-    if (!session.used) {
-      return json(
-        { error: 'Test session was not properly started' },
-        { status: 400 }
-      )
-    }
-
-    // Parse test content
-    const testContent = session.test.content as unknown as TestContent
-    const questions = testContent.questions
-
-    // Validate that all questions are answered
-    const questionIds = questions.map(q => q.id)
-    const answeredQuestionIds = Object.keys(body.answers).map(Number)
-    const missingAnswers = questionIds.filter(id => !answeredQuestionIds.includes(id))
-
-    if (missingAnswers.length > 0) {
-      return json(
-        { error: `Missing answers for questions: ${missingAnswers.join(', ')}` },
-        { status: 400 }
+        { error: 'Test has already been submitted' },
+        { status: 409 }
       )
     }
 
     // Calculate score
-    let correctAnswers = 0
-    const totalQuestions = questions.length
+    const testContent = session.test.content as TestContent
+    const questions = testContent.questions || []
+    let score = 0
 
-    for (const question of questions) {
-      const userAnswer = body.answers[question.id]
-      if (userAnswer === question.correctAnswer) {
-        correctAnswers++
+    // Iterate through questions and check answers
+    questions.forEach((question: TestQuestion) => {
+      const userAnswer = answers[question.id]
+      if (userAnswer !== null && userAnswer !== undefined && userAnswer === question.correctAnswer) {
+        score++
       }
-    }
+    })
 
-    // Create test result
+    // Save the result
     const result = await prisma.testResult.create({
       data: {
         sessionId: session.id,
-        userName: body.userName.trim(),
-        testName: testContent.name,
-        testVersion: testContent.version,
-        answers: body.answers,
-        score: correctAnswers,
-        totalQuestions: totalQuestions
+        userName: userName.trim(),
+        testName: session.test.name,
+        testVersion: session.test.version,
+        answers: answers,
+        score: score,
+        totalQuestions: questions.length
       }
     })
 
     return json({
       success: true,
       result: {
-        id: result.id,
         score: result.score,
         totalQuestions: result.totalQuestions,
-        percentage: Math.round((result.score / result.totalQuestions) * 100),
-        completedAt: result.completedAt
+        percentage: Math.round((result.score / result.totalQuestions) * 100)
       }
     })
   } catch (error) {

@@ -1,14 +1,11 @@
 import { json } from '@solidjs/router'
-import { PrismaClient } from '@prisma/client'
+import { prismaGetter } from '~/lib/prisma'
 import { getCurrentUser } from '~/lib/session'
-import crypto from 'crypto'
-
-const prisma = new PrismaClient()
 
 export async function POST({ request, params }: { request: Request, params: { id: string } }) {
   try {
     // Check authentication
-    const user = getCurrentUser(request)
+    const user = await getCurrentUser(request)
     if (!user) {
       return json(
         { error: 'Not authenticated' },
@@ -26,6 +23,8 @@ export async function POST({ request, params }: { request: Request, params: { id
     }
 
     // Check if test exists
+    const prisma = await prismaGetter();
+    
     const test = await prisma.test.findUnique({
       where: { id: testId }
     })
@@ -37,7 +36,7 @@ export async function POST({ request, params }: { request: Request, params: { id
       )
     }
 
-    // Generate unique token
+    // Generate unique token using Web Crypto API
     const token = crypto.randomUUID()
     
     // Set expiration to 7 days from now
