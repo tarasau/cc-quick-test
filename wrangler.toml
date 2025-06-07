@@ -4,6 +4,7 @@ compatibility_flags = [ "nodejs_compat" ]
 
 main = "./.output/server/index.mjs"
 route = "cc-quick-test.pages.dev/*"
+pages_build_output_dir = "./dist"
 
 [env.production.vars]
 NODE_ENV = "production"
